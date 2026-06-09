@@ -1,0 +1,50 @@
+# Privacy Policy for Motif
+
+Motif is a personal-use prototype app created to help me analyze my own Pinterest boards and saved inspiration images. The app identifies recurring visual patterns, themes, colors, silhouettes, clothing items, textures, and style elements.
+
+Motif is not currently intended for public use.
+
+## Information Collected
+
+If I connect my Pinterest account, Motif may access Pinterest data that I authorize, such as:
+
+* My Pinterest boards
+* My saved pins
+* Pin images
+* Pin descriptions
+* Board names
+* Related metadata
+
+Motif may also store analysis results generated from this information, such as recurring style themes, color palettes, silhouettes, and item recommendations.
+
+## How Information Is Used
+
+This information is used only to provide personal style analysis for my own use.
+
+Motif does not sell personal information, share Pinterest data with other users, post to Pinterest, or modify Pinterest boards.
+
+## Third-Party Services
+
+Motif may use third-party services to operate the prototype, including:
+
+* Pinterest API for accessing authorized Pinterest data
+* Supabase for authentication, database, or storage
+* AI analysis providers such as Anthropic or OpenAI
+* Hosting providers such as Vercel or Netlify
+
+These services are used only as needed to run the app and generate style analysis.
+
+## Data Storage
+
+Motif may store authorized Pinterest data and generated style analysis results in a private database for personal use.
+
+Because this is a prototype, no online service can guarantee complete security, but reasonable steps will be taken to keep data private and access-limited.
+
+## Data Deletion
+
+Since Motif is currently for personal use only, data can be deleted directly from the app database or related third-party services.
+
+## Changes
+
+This Privacy Policy may be updated if Motif changes from a personal-use prototype into a public app.
+
