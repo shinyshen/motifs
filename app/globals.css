@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=Caveat:wght@400;600;700&display=swap');
 
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -7,96 +7,98 @@
 @tailwind components;
 @tailwind utilities;
 
+html, html *, html *::before, html *::after {
+  cursor: url('/chrome_cursor.png') 28 26, pointer !important;
+}
+
 @layer base {
   :root {
     --cream: #f5f0e8;
-    --ink: #1a1714;
-    --ink-soft: #2e2a27;
-    --warm-gray: #8a847c;
-    --accent: #c8a97e;
-    --accent-muted: #e8d9c4;
-    --paper: #ede8df;
-    --border-color: #d4cdc4;
-    --radius: 0.375rem;
-  }
-
-  .dark {
-    --cream: #f5f0e8;
-    --ink: #f0ebe3;
-    --ink-soft: #c8c2b8;
-    --warm-gray: #8a847c;
-    --accent: #c8a97e;
-    --accent-muted: #3d3530;
-    --paper: #2a2520;
-    --border-color: #3d3530;
+    --ink: #2d2d2d;
+    --ink-soft: #4a4a4a;
+    --warm-gray: #888;
+    --pink: #f4a0c0;
+    --pink-dark: #d4809a;
+    --pink-pale: #fde8ef;
+    --green: #8faa7c;
   }
 
   * { box-sizing: border-box; }
 
   body {
-    background-color: #f5f0e8;
-    color: #1a1714;
+    background-color: #faf7f2;
+    color: #2d2d2d;
     font-family: 'Inter', sans-serif;
-    position: relative;
-  }
-
-  /* Subtle paper grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
   }
 
   h1, h2, h3, h4 {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Bodoni Moda', serif;
+    color: #2d2d2d;
   }
 
-  .dark body {
-    background-color: #1e1b18;
-    color: #f0ebe3;
+  .handwriting {
+    font-family: 'Caveat', cursive;
   }
 }
 
 @layer components {
-  .editorial-card {
-    background-color: #ede8df;
-    border: 1px solid #d4cdc4;
-    border-radius: 2px;
+  .washi-tape {
+    position: relative;
+  }
+  .washi-tape::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-1.5deg);
+    width: 56px;
+    height: 16px;
+    background: rgba(255, 220, 150, 0.7);
+    z-index: 10;
+  }
+  .washi-tape-green::before {
+    background: rgba(143, 170, 124, 0.65);
+    transform: translateX(-50%) rotate(1deg);
+  }
+  .washi-tape-pink::before {
+    background: rgba(240, 128, 168, 0.5);
+    transform: translateX(-50%) rotate(-2deg);
   }
 
-  .polaroid {
+  /* Shadow only on images and photo cards, never text */
+  .photo-card {
     background: #ffffff;
     padding: 8px 8px 32px 8px;
-    box-shadow: 2px 3px 12px rgba(26, 23, 20, 0.15);
+    box-shadow: 3px 5px 16px rgba(0,0,0,0.13);
   }
 
-  .serif { font-family: 'Playfair Display', serif; }
-  .sans { font-family: 'Inter', sans-serif; }
+  img {
+    box-shadow: 2px 4px 12px rgba(0,0,0,0.12);
+  }
+
+  img[alt="Motifs"],
+  img[src="/buttons.png"] {
+    box-shadow: none !important;
+  }
+
+  .magazine-item {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .magazine-item:hover {
+    transform: scale(1.05) rotate(0deg) !important;
+    z-index: 20 !important;
+  }
 
   .drop-in {
-    animation: dropIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
-
   @keyframes dropIn {
-    from {
-      opacity: 0;
-      transform: translateY(-14px) rotate(var(--rotate, 0deg)) scale(0.97);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) rotate(var(--rotate, 0deg)) scale(1);
-    }
+    from { opacity: 0; transform: translateY(-10px) scale(0.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
   }
 
-  .pin-cluster > * {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .pin-cluster > *:hover {
-    transform: scale(1.06) rotate(0deg) !important;
-    z-index: 10;
-    box-shadow: 4px 6px 20px rgba(26, 23, 20, 0.2) !important;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
   }
 }

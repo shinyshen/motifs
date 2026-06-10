@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { PinterestBoard, AnalysisSession } from "@/types";
+import { getMockAggregateReport, getMockTimeline } from "@/lib/claude/mock-analyzer";
 import BoardSelector from "@/components/dashboard/BoardSelector";
 import AnalysisProgress from "@/components/dashboard/AnalysisProgress";
 import StyleReport from "@/components/dashboard/StyleReport";
@@ -9,78 +10,58 @@ import TimelineView from "@/components/dashboard/TimelineView";
 
 type View = "boards" | "analyzing" | "report";
 
+const DEMO_BOARDS: PinterestBoard[] = [
+  { id: "1", name: "Style Inspo", description: "Everything I want to wear", pin_count: 142 },
+  { id: "2", name: "Outfits", description: "Full looks I love", pin_count: 87 },
+  { id: "3", name: "Wardrobe Goals", description: "Building my dream closet", pin_count: 63 },
+  { id: "4", name: "Winter Fits", description: "Cold weather dressing", pin_count: 48 },
+  { id: "5", name: "Minimal", description: "Less is more", pin_count: 34 },
+  { id: "6", name: "Street Style", description: "Real people, real clothes", pin_count: 91 },
+];
+
 export default function DashboardPage() {
   const [view, setView] = useState<View>("boards");
-  const [boards, setBoards] = useState<PinterestBoard[]>([]);
-  const [sessionId, setSessionId] = useState<string | null>(null);
   const [session, setSession] = useState<AnalysisSession | null>(null);
   const [activeTab, setActiveTab] = useState<"report" | "timeline">("report");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch("/api/boards")
-      .then((r) => {
-        if (r.status === 401) {
-          window.location.href = "/";
-          return null;
-        }
-        return r.json();
-      })
-      .then((data) => {
-        if (data) setBoards(data.boards ?? []);
-      })
-      .catch(() => setError("Failed to load boards"))
-      .finally(() => setLoading(false));
-  }, []);
-
-  // Poll for session status when analyzing
-  useEffect(() => {
-    if (!sessionId || view !== "analyzing") return;
-
-    const poll = async () => {
-      const res = await fetch(`/api/analyze/${sessionId}`);
-      const data = await res.json();
-      setSession(data.session);
-
-      if (data.session.status === "complete") {
-        setView("report");
-      } else if (data.session.status === "error") {
-        setError("Analysis failed. Please try again.");
-        setView("boards");
-      }
-    };
-
-    const interval = setInterval(poll, 3000);
-    poll(); // immediate first check
-    return () => clearInterval(interval);
-  }, [sessionId, view]);
+  const [progress, setProgress] = useState(0);
 
   const handleBoardSelect = async (board: PinterestBoard) => {
-    setError(null);
-    const res = await fetch("/api/analyze", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ boardId: board.id, boardName: board.name }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      setError(data.error ?? "Failed to start analysis");
-      return;
-    }
-    setSessionId(data.sessionId);
+    // Start demo analysis with fake progress
+    const mockSession: AnalysisSession = {
+      id: "demo",
+      board_id: board.id,
+      board_name: board.name,
+      created_at: new Date().toISOString(),
+      status: "analyzing",
+      total_pins: board.pin_count,
+      analyzed_pins: 0,
+    };
+    setSession(mockSession);
     setView("analyzing");
-  };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="serif text-2xl text-[#8a847c] italic animate-pulse">
-          Loading your boards...
-        </p>
-      </div>
-    );
-  }
+    // Simulate progress
+    let analyzed = 0;
+    const total = board.pin_count;
+    const interval = setInterval(() => {
+      analyzed = Math.min(analyzed + Math.floor(Math.random() * 4) + 1, total);
+      setProgress(analyzed);
+      setSession((s) => s ? { ...s, analyzed_pins: analyzed } : s);
+
+      if (analyzed >= total) {
+        clearInterval(interval);
+        const report = getMockAggregateReport(total);
+        const timeline = getMockTimeline([]);
+        setSession((s) => s ? {
+          ...s,
+          status: "complete",
+          analyzed_pins: total,
+          report,
+          timeline,
+        } : s);
+        setView("report");
+      }
+    }, 120);
+  };
 
   return (
     <div className="min-h-screen px-6 py-10 max-w-6xl mx-auto">
@@ -110,27 +91,16 @@ export default function DashboardPage() {
               </button>
             </>
           )}
-          <button
-            onClick={() => fetch("/api/auth/logout", { method: "POST" }).then(() => (window.location.href = "/"))}
-            className="sans text-xs text-[#8a847c] hover:text-[#1a1714] transition-colors"
-          >
-            Sign out
-          </button>
+          <span className="sans text-xs text-[#c8a97e] tracking-wider">✦ Demo mode</span>
         </div>
       </header>
 
-      {error && (
-        <div className="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-700 sans text-sm rounded">
-          {error}
-        </div>
-      )}
-
       {view === "boards" && (
-        <BoardSelector boards={boards} onSelect={handleBoardSelect} />
+        <BoardSelector boards={DEMO_BOARDS} onSelect={handleBoardSelect} />
       )}
 
       {view === "analyzing" && session && (
-        <AnalysisProgress session={session} />
+        <AnalysisProgress session={{ ...session, analyzed_pins: progress }} />
       )}
 
       {view === "report" && session?.report && (

@@ -2,58 +2,129 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default function Home() {
-  // If a test token is set, skip the login page entirely
   if (process.env.PINTEREST_TEST_TOKEN) {
-    redirect("/dashboard");
+    redirect("/analyze");
   }
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center px-6">
-      {/* Decorative background words */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-        <span className="absolute top-[15%] left-[8%] text-[120px] font-black serif text-[#d4cdc4] opacity-40 leading-none">
-          STYLE
-        </span>
-        <span className="absolute bottom-[20%] right-[6%] text-[90px] font-black serif text-[#d4cdc4] opacity-30 leading-none rotate-[-3deg]">
-          MOTIFS
-        </span>
+    <main className="min-h-screen overflow-hidden" style={{ backgroundColor: "#faf7f2" }}>
+
+      {/* NAV */}
+      <nav className="flex items-center justify-between px-8 py-5 border-b border-black/10">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/motif_logo.png" alt="Motifs" className="h-32 w-auto" style={{ boxShadow: "none" }} />
+        <div className="flex items-center gap-6">
+          <span className="handwriting text-[#555] text-lg hidden md:block">your Pinterest style analysis &#x2661;</span>
+          <Link
+            href="/analyze"
+            className="font-sans text-xs tracking-[0.2em] uppercase bg-[#f4a0c0] text-white px-5 py-2.5 font-semibold hover:bg-[#d4809a] transition-colors"
+            style={{ boxShadow: "3px 3px 0 rgba(0,0,0,0.1)" }}
+          >
+            Try it →
+          </Link>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="px-8 pt-4 pb-12 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
+
+          {/* Left */}
+          <div>
+            <h1
+              className="font-serif font-black text-[#2d2d2d] leading-[0.88] mb-6"
+              style={{ fontSize: "clamp(52px, 9vw, 110px)" }}
+            >
+              So you&apos;ve been<br />
+              <span className="italic text-[#f4a0c0]">pinning.</span>
+            </h1>
+
+            <p className="handwriting text-[#4a4a4a] text-xl mb-3 rotate-[-1deg] inline-block">
+              is it a hot girl summer? manic pixie girl spring? city girl fall? let&apos;s find out.
+            </p>
+
+            <div style={{ marginTop: "-20px" }}>
+              <Link
+                href="/analyze"
+                className="relative inline-flex items-center justify-center hover:opacity-80 transition-opacity"
+                style={{ boxShadow: "none" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/buttons.png" alt="" className="w-96" style={{ display: "block" }} />
+                <span className="absolute inset-0 flex items-center justify-center text-white font-sans text-base tracking-[0.2em] uppercase font-semibold" style={{ transform: "translateY(-4px)" }}>
+                  Analyze my Pinterest
+                </span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Right — collage graphic */}
+          <div className="hidden md:flex items-start justify-center" style={{ marginTop: "-40px" }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/front_page_graphic.png"
+              alt="style collage"
+              className="w-full max-w-lg"
+              style={{ boxShadow: "none" }}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* ARCHETYPE STRIP */}
+      <div className="border-y border-black/10 py-4 overflow-hidden" style={{ backgroundColor: "#f4a0c0", backgroundImage: "radial-gradient(circle, #f7b8cf 28%, transparent 28%)", backgroundSize: "32px 32px", backgroundPosition: "16px 50%" }}>
+        <div className="flex whitespace-nowrap" style={{ animation: "marquee 24s linear infinite" }}>
+          {["hot girl summer", "manic pixie dream girl", "cool city girl", "old money", "downtown rocker", "quiet luxury", "coastal grandmother", "y2k revival", "dark academia"].flatMap((a, i) => [
+            <span key={`a-${i}`} className="font-serif italic font-bold text-white text-lg flex-shrink-0 px-8">{a}</span>,
+            <span key={`d-${i}`} className="font-serif text-white/50 text-lg flex-shrink-0">·</span>,
+          ])}
+          {["hot girl summer", "manic pixie dream girl", "cool city girl", "old money", "downtown rocker", "quiet luxury", "coastal grandmother", "y2k revival", "dark academia"].flatMap((a, i) => [
+            <span key={`b-${i}`} className="font-serif italic font-bold text-white text-lg flex-shrink-0 px-8">{a}</span>,
+            <span key={`e-${i}`} className="font-serif text-white/50 text-lg flex-shrink-0">·</span>,
+          ])}
+        </div>
       </div>
 
-      <div className="relative z-10 text-center max-w-xl">
-        <p className="sans text-xs tracking-[0.2em] uppercase text-[#8a847c] mb-6">
-          ✦ A personal style intelligence tool
-        </p>
-
-        <h1 className="serif text-[72px] font-black leading-[0.9] tracking-tight text-[#1a1714] mb-8">
-          Motifs
-        </h1>
-
-        <p className="sans text-base text-[#2e2a27] leading-relaxed mb-10 max-w-sm mx-auto">
-          Connect your Pinterest boards. Let AI read your saves like a sharp-eyed stylist — and tell you what it sees.
-        </p>
-
-        <Link
-          href="/api/auth/login"
-          className="inline-block bg-[#1a1714] text-[#f5f0e8] sans text-sm tracking-widest uppercase px-8 py-4 hover:bg-[#2e2a27] transition-colors"
-        >
-          Connect Pinterest →
-        </Link>
-
-        <div className="mt-16 grid grid-cols-3 gap-6 text-left border-t border-[#d4cdc4] pt-10">
+      {/* HOW IT WORKS */}
+      <section className="px-8 pb-14 pt-16 max-w-6xl mx-auto">
+        <h2 className="font-serif font-black text-[#2d2d2d] mb-12" style={{ fontSize: "clamp(32px, 5vw, 60px)" }}>
+          How it works.
+        </h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
-            { label: "Pattern Recognition", desc: "Textures, silhouettes, hardware signatures across every saved pin." },
-            { label: "Style Evolution", desc: "How your palette and proportions have shifted — quarter by quarter." },
-            { label: "Stylist Notes", desc: "What you keep saving and what&apos;s conspicuously missing from your boards." },
-          ].map((f) => (
-            <div key={f.label}>
-              <p className="serif text-xs font-bold uppercase tracking-wider text-[#1a1714] mb-1">
-                {f.label}
-              </p>
-              <p className="sans text-xs text-[#8a847c] leading-relaxed">{f.desc}</p>
+            { icon: "/step1.png", step: "Show us your pins", desc: "Just connect your Pinterest.", h: "200px" },
+            { icon: "/step2.png", step: "Pick your favorite board", desc: "Style inspo, bedroom decor, whatever you've been saving to.", h: "200px" },
+            { icon: "/step3.png", step: "Let us snoop", desc: "We'll look for patterns you might not even notice.", h: "200px" },
+            { icon: "/step4.png", step: "Go shop 'til you drop", desc: "Aesthetic breakdown, must-source pieces, and even your style evolution.", h: "160px", mb: "24px" },
+          ].map((item) => (
+            <div key={item.step} className="flex flex-col items-center text-center">
+              <div className="flex items-end justify-center" style={{ height: "200px", marginBottom: "16px" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={item.icon} alt={item.step} style={{ height: item.h, width: "auto", boxShadow: "none", mixBlendMode: "multiply", marginBottom: item.mb ?? "0px" }} />
+              </div>
+              <p className="font-serif font-bold text-[#2d2d2d] text-base mb-2">{item.step}</p>
+              <p className="font-sans text-[#555] text-xs leading-relaxed">{item.desc}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
+
+      {/* CTA */}
+      <section className="px-8 py-20 text-center" style={{ backgroundColor: "#f4a0c0", backgroundImage: "radial-gradient(circle, #f7b8cf 28%, transparent 28%)", backgroundSize: "32px 32px", backgroundPosition: "16px 50%" }}>
+        <p className="handwriting text-[#3a3a3a] text-2xl mb-3">so... what does your pinterest say about you?</p>
+        <h2 className="font-serif font-black text-[#3a3a3a] mb-8" style={{ fontSize: "clamp(36px, 6vw, 80px)" }}>
+          Find out now.
+        </h2>
+        <Link href="/analyze">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/motifs_button.png" alt="Motifs" className="mx-auto hover:opacity-80 transition-opacity" style={{ height: "480px", width: "auto", boxShadow: "none", marginTop: "-40px", marginBottom: "-40px" }} />
+        </Link>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="px-8 py-5 flex items-center justify-between border-t border-black/10" style={{ backgroundColor: "#faf7f2" }}>
+        <span className="font-serif text-sm text-[#555]">motifs &#x2661; 2026</span>
+      </footer>
     </main>
   );
 }
